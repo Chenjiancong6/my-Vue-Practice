@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>过滤器</title>
+  </head>
+  <body>
+    <div id="app">
+      <input type="text" v-model="price" />
+      {{price | current}}
+      <!--  {{price |current('$')}} -->
+      <!--current为过滤器名称，当为current时为默认值，current('$')是自己添加的符号-->
+    </div>
+  </body>
+  <script src="./vue.js"></script>
+  <script>
+    Vue.filter("current", function(val, unit) {
+      //val是形参，从price的具体值传过来,val=price
+      //unit是过滤器具体符号的形参，如元，美元，￥,$
+      vals = val || 0;
+      units = unit || "元"; //"元"为没有写current('$')时的默认值
+      return vals + units; //price+货币符号
+    });
+    new Vue({
+      el: "#app",
+      data: {
+        price: 10
+      }
+    });
+  </script>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>一个可从外部关闭的下拉菜单</title>
+    <style>
+      .dropdown {
+        border: 1px solid #999;
+        width: 300px;
+        margin-top: 30px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <!-- 自定义指令不可以有大小写混合！！！！ -->
+      <div v-clickoutside="handleClose">
+        <!--v-clickOutside是自定义指令  -->
+        <button @click="show=!show">点击下拉菜单</button>
+        <!-- @click="show=!show" ,点击后，show=true,菜单内容显示  -->
+        <div class="dropdown" v-show="show">
+          <!--  v-show="show" show的初始值为false,菜单内容为隐藏状态 -->
+          <p>下拉框的内容，点击外面区域可以关闭</p>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="vue.js"></script>
+  <script>
+    Vue.directive("clickoutside", {
+      bind: function(el, binding) {
+        //bind：指令第一次绑定到元素时使用
+        function documentHandle(e) {
+          //documentHandle(e)函数做点击区域判断使用
+          if (el.contains(e.target)) {
+            //a.contains(b):a 包含b
+            //如果点击的区域是下拉菜单中的内容，则跳出函数
+            return false;
+          }
+          if (binding.expression) {
+            binding.value(e);
+            //执行methods中的函数
+          }
+        }
+        el._vueClick = documentHandle; //引用documentHandle函数
+        document.addEventListener("click", documentHandle); //添加点击事件
+      },
+      unbind: function(el, binding) {
+        //unbind： 元素解绑
+        document.removeEventListener("click", documentHandle);
+        delete el._vueClick;
+      }
+    });
+    ///////////
+    new Vue({
+      el: "#app",
+      data: {
+        show: false
+      },
+      methods: {
+        handleClose: function() {
+          this.show = false;
+        }
+      }
+    });
+  </script>
+</html>

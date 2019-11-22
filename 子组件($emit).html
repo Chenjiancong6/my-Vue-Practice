@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>组件通信（子组件给父组件通信）</title>
+  </head>
+  <body>
+    <div id="app">
+      <p>{{total}}</p>
+      <my-component @reduce="handleTotal" @add="handleTotal"></my-component>
+      <!--父组件：@reduce="handleTotal" @add="handleTotal"  -->
+    </div>
+    <script src="./vue.js"></script>
+    <script>
+      Vue.component("my-component", {
+        template:
+          '\<div>\
+               <button @click="handleIncrease">+1</button>\
+             <button @click="handleReduce">-1</button>\
+             </div>', //子组件
+        data: function() {
+          return {
+            counter: 0 //计数
+          };
+        },
+        methods: {
+          handleIncrease: function() {
+            this.counter++;
+            this.$emit("add", this.counter);
+            //$emit子组价给父组件 "add"，通信
+          },
+          handleReduce: function() {
+            this.counter--;
+            this.$emit("reduce", this.counter);
+            //$emit()把this.counter--;传递给父组件 handleTotal
+          }
+        }
+      });
+      var app = new Vue({
+        el: "#app",
+        data: {
+          total: 0
+        },
+        methods: {
+          handleTotal: function(total) {
+            this.total = total;
+          }
+        }
+      });
+    </script>
+
+    <!-- 第二个demo -->
+    <div id="app1">
+      <a-component></a-component>
+      <script>
+        Vue.component("a-component", {
+          template:
+            '<div><show @show-balance="show_balance"></show>\
+                   <div v-if="show">你有6666元</div>\
+                   </div>',
+          //a-component的子组件,但此子组件又包含一个<show></show>父组件
+          data: function() {
+            return {
+              show: true
+              //让<div v-if="show">你有6666元</div>显示
+            };
+          },
+          methods: {
+            show_balance: function() {
+              this.show = true;
+            }
+          }
+        });
+        //show子组件
+        Vue.component("show", {
+          template: '<button @click="on_click">显示余额</button>',
+          methods: {
+            on_click: function() {
+              this.$emit("show-balance");
+              //子组件<button @click="on_click">显示余额</button>给父组件'show-balance'通信
+            }
+          }
+        });
+        var app1 = new Vue({
+          el: "#app1"
+        });
+      </script>
+    </div>
+  </body>
+</html>

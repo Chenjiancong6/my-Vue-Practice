@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>vue购物车</title>
+    <style>
+      [v-cloak] {
+        display: none;
+      }
+      #app {
+        text-align: center;
+      }
+      #app table {
+        border: 1px solid #e9e9e9;
+        border-collapse: collapse;
+        border-spacing: 0;
+        empty-cells: show;
+        margin: 50px auto;
+      }
+
+      th,
+      td {
+        padding: 8px 16px;
+        border: 1px solid #e9e9e9;
+        text-align: center;
+      }
+
+      th {
+        background: #f7f7f7;
+        color: #242121;
+        font-weight: 500;
+        white-space: nowrap;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <template v-if="list.length">
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>商品名称</th>
+              <th>商品单价</th>
+              <th>购买数量</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(item,index) in list">
+              <!--  v-for循环 -->
+              <td>{{ index+1 }}</td>
+              <!--index 初始值为0-->
+              <td>{{ item.name }}</td>
+              <td>{{ item.price }}</td>
+              <td>
+                <button @click="reduce(index)" :disabled="item.count===1">
+                  -
+                </button>
+                {{item.count}}
+                <!--这里加index是为了判断点击的是第几个按钮-->
+                <button @click="add(index)">+</button>
+              </td>
+              <td>
+                <button @click="remove(index)">
+                  移除
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div>总价：￥{{totalPrice}}</div>
+      </template>
+      <!-- 当移除所有购物车商品时，显示为空 -->
+      <div v-else>购物车为空</div>
+    </div>
+
+    <script src="./vue.js"></script>
+    <script>
+      var app = new Vue({
+        el: "#app",
+        data: {
+          list: [
+            { id: 1, name: "华为P30", price: "6560", count: 1 },
+            { id: 2, name: "iphone 11 plus", price: "7542", count: 1 },
+            { id: 3, name: "三只松鼠", price: "79", count: 2 },
+            { id: 4, name: "macbook", price: "5218", count: 1 },
+            { id: 5, name: "airprod", price: "1240", count: 1 }
+          ]
+        },
+        computed: {
+          totalPrice: function() {
+            var total = 0;
+            for (var i = 0; i < this.list.length; i++) {
+              var item = this.list[i]; //遍历所有商品
+              total += item.price * item.count; //商品总价格
+            }
+            return total.toString().replace(/\B(?=(\d{3})+$)/g, ",");
+            //正则表达式
+          }
+        },
+        methods: {
+          reduce: function(index) {
+            if (this.list[index].count === 1) return;
+            this.list[index].count--;
+          },
+          add: function(index) {
+            this.list[index].count++;
+          },
+          remove: function(index) {
+            this.list.splice(index, 1);
+            //splice(index, 1), 删除鼠标当前的列
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

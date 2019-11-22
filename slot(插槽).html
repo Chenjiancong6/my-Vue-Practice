@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>插槽slot</title>
+    <style>
+      .panel {
+        max-width: 300px;
+        border: 1px solid #999;
+        margin: 15px;
+      }
+      .panel > * {
+        padding: 15px;
+      }
+      .title {
+        border-bottom: 1px solid #999;
+      }
+      .footer {
+        border-top: 1px solid #999;
+        color: fuchsia;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <!-- 默认插槽模板 -->
+      <panel></panel>
+
+      <!-- 修改插槽模板内容 -->
+      <panel>
+        <div slot="title">这不是标题</div>
+        <div slot="content">dfgh对方过后jk</div>
+        <div slot="footer">更少信息</div>
+      </panel>
+    </div>
+
+    <!-- ------------模板：template ------------->
+    <template id="panel-tpl">
+      <div class="panel">
+        <div class="title">
+          <slot name="title">
+            头部信息
+          </slot>
+        </div>
+        <div class="content">
+          <slot name="content">
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet nisi
+            voluptatem, consequatur neque praesentium laboriosam rem non, nobis
+            optio dicta incidunt a magni quos repellendus molestias, reiciendis
+            asperiores consequuntur nam!
+          </slot>
+        </div>
+        <div class="footer">
+          <slot name="footer">更多消息 </slot>
+        </div>
+      </div>
+    </template>
+  </body>
+  <script src="./vue.js"></script>
+  <script>
+    Vue.component("panel", {
+      template: "#panel-tpl"
+    });
+    new Vue({
+      el: "#app"
+    });
+  </script>
+</html>
